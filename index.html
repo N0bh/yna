@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Just because — Yna</title>
+  <style>
+    :root {
+      --bg: #fdf2f4;
+      --card-bg: rgba(255, 255, 255, 0.95);
+      --accent: #d66d75;
+      --accent-light: #ffb7c5;
+      --text: #5a4a4a;
+      --shadow: 0 15px 35px rgba(214, 109, 117, 0.15);
+    }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden; 
+    }
+
+    /* Invisible Tap Zones */
+    .tap-zone {
+      position: fixed;
+      top: 0;
+      height: 100vh;
+      z-index: 200;
+      cursor: pointer;
+    }
+    .tap-left { left: 0; width: 20%; }
+    .tap-right { right: 0; width: 80%; }
+
+    /* Floating Background */
+    .bubbles {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      z-index: -1;
+      pointer-events: none;
+    }
+    .bubble, .heart-float {
+      position: absolute;
+      opacity: 0.3;
+      animation: floatUp 15s infinite ease-in;
+    }
+    .bubble { background: var(--accent-light); border-radius: 50%; }
+    .heart-float { color: var(--accent); user-select: none; }
+
+    @keyframes floatUp {
+      0% { transform: translateY(110vh) scale(0.5); opacity: 0; }
+      20% { opacity: 0.4; }
+      100% { transform: translateY(-20vh) scale(1.2); opacity: 0; }
+    }
+
+    /* Entry Screen Photo Frame */
+    .entry-photo {
+      background: white;
+      padding: 12px 12px 40px 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      transform: rotate(-3deg);
+      margin-bottom: 30px;
+      width: 220px;
+    }
+    .entry-photo img {
+      width: 100%;
+      aspect-ratio: 1;
+      object-fit: cover;
+      display: block;
+    }
+
+    .main-wrapper {
+      position: relative;
+      width: min(450px, 92vw);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+
+    .slider-viewport {
+      width: 100%;
+      overflow: hidden;
+      border-radius: 32px;
+    }
+
+    .slider-track {
+      display: flex;
+      transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .bento-card {
+      flex: 0 0 100%;
+      backdrop-filter: blur(15px);
+      padding: 40px 25px;
+      height: 480px; 
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .days-num { font-size: 4.5rem; font-weight: 800; color: var(--accent); margin: 5px 0; }
+    .section-title { text-transform: uppercase; letter-spacing: 2px; font-size: 0.75rem; opacity: 0.6; margin-bottom: 20px; font-weight: bold; }
+
+    .reason-box {
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      min-height: 150px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      box-shadow: inset 0 0 10px rgba(214, 109, 117, 0.05);
+      border: 1px solid var(--bg);
+    }
+
+    .polaroid-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; }
+    .polaroid { background: white; padding: 5px 5px 12px 5px; box-shadow: 0 5px 10px rgba(0,0,0,0.1); transform: rotate(var(--r)); }
+    .polaroid img { width: 100%; aspect-ratio: 1; object-fit: cover; }
+
+    #gate-overlay {
+      position: fixed; inset: 0; background: var(--bg);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      z-index: 1000;
+    }
+    .open-btn {
+      background: var(--accent); color: white; border: none;
+      padding: 16px 45px; border-radius: 50px; font-size: 1.1rem;
+      cursor: pointer; font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bubbles" id="bubble-container"></div>
+
+  <div id="gate-overlay">
+    <div class="entry-photo">
+      <img src="https://picsum.photos/400/400" alt="Us">
+      <p style="text-align:center; font-family: cursive; margin: 15px 0 0 0; color: #888;">For Yna</p>
+    </div>
+    <button class="open-btn" onclick="startExperience()">Open 💗</button>
+  </div>
+
+  <div id="nav-controls" style="display:none">
+    <div class="tap-zone tap-left" onclick="prev()"></div>
+    <div class="tap-zone tap-right" onclick="next()"></div>
+  </div>
+
+  <div class="main-wrapper" id="main-content" style="display:none">
+    <div class="slider-viewport">
+      <div class="slider-track" id="track">
+        
+        <div class="bento-card">
+          <p class="section-title">Together for</p>
+          <h2 class="days-num" id="daysCount">0</h2>
+          <p class="section-title">Days</p>
+          <p style="margin-top: 40px; font-size: 12px; opacity: 0.5;">Tap right to continue</p>
+        </div>
+
+        <div class="bento-card">
+          <p class="section-title">Memories</p>
+          <div class="polaroid-grid">
+            <div class="polaroid" style="--r:-3deg"><img src="https://picsum.photos/200/200?1"></div>
+            <div class="polaroid" style="--r:2deg"><img src="https://picsum.photos/200/200?2"></div>
+            <div class="polaroid" style="--r:-2deg"><img src="https://picsum.photos/200/200?3"></div>
+            <div class="polaroid" style="--r:3deg"><img src="https://picsum.photos/200/200?4"></div>
+          </div>
+        </div>
+
+        <div class="bento-card">
+          <p class="section-title">100 Things I Love</p>
+          <div class="reason-box">
+            <p id="reason-text" style="font-size: 1.1rem; transition: opacity 0.4s;">Loading...</p>
+          </div>
+          <p style="margin-top: 15px; font-size: 11px; opacity: 0.5;">The heart changes automatically ✨</p>
+        </div>
+
+        <div class="bento-card">
+          <p class="section-title">A Note for You</p>
+          <p style="line-height: 1.6; font-family: Georgia, serif; font-style: italic; font-size: 1.05rem;">
+            "To my dearest Yna, you are my home and my greatest adventure. Thank you for being you."
+          </p>
+          <p style="margin-top: 20px; font-weight: bold; color: var(--accent);">Love, Walter</p>
+        </div>
+
+        <div class="bento-card">
+          <p class="section-title">For You</p>
+          <svg width="180" height="200" viewBox="0 0 200 240">
+            <path d="M100 230 L70 140 M100 230 L100 120 M100 230 L130 140" stroke="#2d6a4f" stroke-width="3" fill="none"/>
+            <g transform="translate(100,100)">
+              <circle cx="0" cy="0" r="22" fill="#ffb703"/><circle cx="0" cy="0" r="10" fill="#3d2b1f"/>
+            </g>
+            <g transform="translate(65,130)"><ellipse cx="0" cy="0" rx="10" ry="15" fill="#ff4d6d"/></g>
+            <g transform="translate(135,130)"><circle cx="0" cy="0" r="15" fill="#ffb3c1" opacity="0.9"/></g>
+            <rect x="90" y="200" width="20" height="8" rx="2" fill="#d66d75"/>
+          </svg>
+          <p style="margin-top: 15px; font-size: 14px; font-weight: bold; color: var(--accent);">Tulips • Sunflowers • Carnations</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <audio id="myAudio" loop>
+    <source src="Contents/Music/Libu-Libong Buwan (Uuwian) - Kyle Raphael (Lyric Video).mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    const startDate = new Date('2025-06-03');
+    let currentIndex = 0;
+    const track = document.getElementById('track');
+    const totalCards = 5;
+
+    const reasons = [
+      "The way you smile when you're shy.",
+      "How you always know how to comfort me.",
+      "Your incredible strength.",
+      "The way you look at me.",
+      "Your laugh is my favorite sound.",
+      "How safe I feel in your arms."
+    ];
+    let reasonIndex = 0;
+
+    function changeReason() {
+      const textEl = document.getElementById('reason-text');
+      if(!textEl) return;
+      textEl.style.opacity = 0;
+      setTimeout(() => {
+        reasonIndex = (reasonIndex + 1) % reasons.length;
+        textEl.innerText = reasons[reasonIndex];
+        textEl.style.opacity = 1;
+      }, 400);
+    }
+
+    function startExperience() {
+      document.getElementById('gate-overlay').style.display = 'none';
+      document.getElementById('main-content').style.display = 'flex';
+      document.getElementById('nav-controls').style.display = 'block';
+      document.getElementById('myAudio').play();
+      document.getElementById('reason-text').innerText = reasons[0];
+      setInterval(changeReason, 5000);
+      updateCounter();
+    }
+
+    function updateCounter() {
+      const diffDays = Math.floor(Math.abs(new Date() - startDate) / (1000 * 60 * 60 * 24));
+      document.getElementById('daysCount').innerText = diffDays;
+    }
+
+    function next() { if (currentIndex < totalCards - 1) { currentIndex++; updateSlider(); } }
+    function prev() { if (currentIndex > 0) { currentIndex--; updateSlider(); } }
+
+    function updateSlider() {
+      track.style.transform = `translateX(-${currentIndex * 100}%)`;
+    }
+
+    // Background
+    const bContainer = document.getElementById('bubble-container');
+    function createFloater(type) {
+      const el = document.createElement('div');
+      el.className = type;
+      const size = Math.random() * 25 + 15 + 'px';
+      if(type === 'bubble') { el.style.width = size; el.style.height = size; }
+      else { el.innerHTML = '💗'; el.style.fontSize = size; }
+      el.style.left = Math.random() * 100 + 'vw';
+      el.style.animationDuration = (Math.random() * 8 + 8) + 's';
+      bContainer.appendChild(el);
+    }
+    for (let i = 0; i < 15; i++) { createFloater('bubble'); createFloater('heart-float'); }
+  </script>
+</body>
+</html>
