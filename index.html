@@ -26,6 +26,8 @@
       align-items: center;
       justify-content: center;
       overflow: hidden; 
+      /* Prevents pull-to-refresh on mobile while swiping */
+      overscroll-behavior-y: contain;
     }
 
     /* Invisible Tap Zones */
@@ -39,7 +41,6 @@
     .tap-left { left: 0; width: 20%; }
     .tap-right { right: 0; width: 80%; }
 
-    /* Floating Background */
     .bubbles {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -60,7 +61,6 @@
       100% { transform: translateY(-20vh) scale(1.2); opacity: 0; }
     }
 
-    /* Entry Screen Photo Frame */
     .entry-photo {
       background: white;
       padding: 12px 12px 40px 12px;
@@ -83,6 +83,8 @@
       align-items: center;
       justify-content: center;
       z-index: 10;
+      /* Crucial for swiping logic */
+      touch-action: pan-y;
     }
 
     .slider-viewport {
@@ -106,6 +108,7 @@
       align-items: center;
       justify-content: center;
       text-align: center;
+      background: var(--card-bg);
     }
 
     .days-num { font-size: 4.5rem; font-weight: 800; color: var(--accent); margin: 5px 0; }
@@ -149,7 +152,7 @@
       <img src="https://picsum.photos/400/400" alt="Us">
       <p style="text-align:center; font-family: cursive; margin: 15px 0 0 0; color: #888;">For Yna</p>
     </div>
-    <button class="open-btn" onclick="startExperience()">Open 💗</button>
+    <button class="open-btn" onclick="startExperience()">Open your surprise! 💗</button>
   </div>
 
   <div id="nav-controls" style="display:none">
@@ -165,7 +168,7 @@
           <p class="section-title">Together for</p>
           <h2 class="days-num" id="daysCount">0</h2>
           <p class="section-title">Days</p>
-          <p style="margin-top: 40px; font-size: 12px; opacity: 0.5;">Tap right to continue</p>
+          <p style="margin-top: 40px; font-size: 12px; opacity: 0.5;">Swipe or tap to continue</p>
         </div>
 
         <div class="bento-card">
@@ -222,6 +225,31 @@
     const track = document.getElementById('track');
     const totalCards = 5;
 
+    // --- SWIPE LOGIC ---
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    const mainContent = document.getElementById('main-content');
+    
+    mainContent.addEventListener('touchstart', e => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, {passive: true});
+
+    mainContent.addEventListener('touchend', e => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleSwipe();
+    }, {passive: true});
+
+    function handleSwipe() {
+      const swipeThreshold = 50; // Minimum pixels to count as a swipe
+      if (touchStartX - touchEndX > swipeThreshold) {
+        next(); // Swiped left
+      } else if (touchEndX - touchStartX > swipeThreshold) {
+        prev(); // Swiped right
+      }
+    }
+    // ------------------
+
     const reasons = [
       "The way you smile when you're shy.",
       "How you always know how to comfort me.",
@@ -249,7 +277,10 @@
       document.getElementById('gate-overlay').style.display = 'none';
       document.getElementById('main-content').style.display = 'flex';
       document.getElementById('nav-controls').style.display = 'block';
-      document.getElementById('myAudio').play();
+      
+      const audio = document.getElementById('myAudio');
+      audio.play().catch(e => console.log("Audio play blocked"));
+      
       document.getElementById('reason-text').innerText = reasons[0];
       setInterval(changeReason, 5000);
       updateCounter();
