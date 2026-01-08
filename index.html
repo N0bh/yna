@@ -26,7 +26,6 @@
       align-items: center;
       justify-content: center;
       overflow: hidden; 
-      /* Prevents pull-to-refresh on mobile while swiping */
       overscroll-behavior-y: contain;
     }
 
@@ -83,7 +82,6 @@
       align-items: center;
       justify-content: center;
       z-index: 10;
-      /* Crucial for swiping logic */
       touch-action: pan-y;
     }
 
@@ -108,7 +106,6 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      background: var(--card-bg);
     }
 
     .days-num { font-size: 4.5rem; font-weight: 800; color: var(--accent); margin: 5px 0; }
@@ -127,9 +124,44 @@
       border: 1px solid var(--bg);
     }
 
-    .polaroid-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; }
-    .polaroid { background: white; padding: 5px 5px 12px 5px; box-shadow: 0 5px 10px rgba(0,0,0,0.1); transform: rotate(var(--r)); }
-    .polaroid img { width: 100%; aspect-ratio: 1; object-fit: cover; }
+    .polaroid-viewport {
+      height: 320px;
+      overflow: hidden;
+      width: 100%;
+      position: relative;
+      mask-image: linear-gradient(to bottom, transparent, black 15%, black 85%, transparent);
+    }
+
+    /* The strip that actually moves */
+    .film-strip {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      align-items: center;
+      animation: slideVertical 15s linear infinite;
+    }
+
+    .polaroid { 
+      background: white; 
+      padding: 8px 8px 20px 8px; 
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1); 
+      transform: rotate(var(--r));
+      width: 180px;
+      flex-shrink: 0;
+    }
+
+    .polaroid img { 
+      width: 100%; 
+      aspect-ratio: 1; 
+      object-fit: cover; 
+      display: block;
+    }
+
+    /* Animation to slide from top to bottom */
+    @keyframes slideVertical {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(calc(-50% - 10px)); }
+    }
 
     #gate-overlay {
       position: fixed; inset: 0; background: var(--bg);
@@ -141,6 +173,58 @@
       padding: 16px 45px; border-radius: 50px; font-size: 1.1rem;
       cursor: pointer; font-weight: bold;
     }
+
+    /* --- POLAROIDS AROUND EXISTING BOUQUET --- */
+
+    .bouquet-layout {
+      position: relative;
+      width: 100%;
+      height: 420px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Polaroid style */
+    .bouquet-polaroid {
+      position: absolute;
+      width: 120px;
+      background: white;
+      padding: 8px 8px 22px;
+      box-shadow: 0 12px 25px rgba(0,0,0,0.12);
+      border-radius: 2px;
+      text-align: center;
+      z-index: 1;
+    }
+
+    .bouquet-polaroid img {
+      width: 100%;
+      aspect-ratio: 1;
+      object-fit: cover;
+      display: block;
+    }
+
+    .bouquet-polaroid span {
+      position: absolute;
+      bottom: 4px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 12px;
+      color: var(--accent);
+    }
+
+    /* Even spacing positions */
+    .pos-tl { top: 140px; left: 5%; transform: rotate(-6deg); }
+    .pos-tr { top: 140px; right: 5%; transform: rotate(6deg); }
+    .pos-bl { bottom: 70px; left: 8%; transform: rotate(4deg); }
+    .pos-br { bottom: 70px; right: 8%; transform: rotate(-4deg); }
+
+    /* Keep flower on top */
+    .blushing-bouquet {
+      position: relative;
+      z-index: 2;
+    }
+
   </style>
 </head>
 <body>
@@ -168,16 +252,22 @@
           <p class="section-title">Together for</p>
           <h2 class="days-num" id="daysCount">0</h2>
           <p class="section-title">Days</p>
-          <p style="margin-top: 40px; font-size: 12px; opacity: 0.5;">Swipe or tap to continue</p>
+          <p style="margin-top: 40px; font-size: 12px; opacity: 0.5;">It all started with a Hi...</p>
         </div>
 
         <div class="bento-card">
           <p class="section-title">Memories</p>
-          <div class="polaroid-grid">
-            <div class="polaroid" style="--r:-3deg"><img src="https://picsum.photos/200/200?1"></div>
-            <div class="polaroid" style="--r:2deg"><img src="https://picsum.photos/200/200?2"></div>
-            <div class="polaroid" style="--r:-2deg"><img src="https://picsum.photos/200/200?3"></div>
-            <div class="polaroid" style="--r:3deg"><img src="https://picsum.photos/200/200?4"></div>
+          <div class="polaroid-viewport">
+            <div class="film-strip">
+              <div class="polaroid" style="--r:-3deg"><img src="https://picsum.photos/200/200?1"></div>
+              <div class="polaroid" style="--r:2deg"><img src="https://picsum.photos/200/200?2"></div>
+              <div class="polaroid" style="--r:-2deg"><img src="https://picsum.photos/200/200?3"></div>
+              <div class="polaroid" style="--r:3deg"><img src="https://picsum.photos/200/200?4"></div>
+              <div class="polaroid" style="--r:-3deg"><img src="https://picsum.photos/200/200?1"></div>
+              <div class="polaroid" style="--r:2deg"><img src="https://picsum.photos/200/200?2"></div>
+              <div class="polaroid" style="--r:-2deg"><img src="https://picsum.photos/200/200?3"></div>
+              <div class="polaroid" style="--r:3deg"><img src="https://picsum.photos/200/200?4"></div>
+            </div>
           </div>
         </div>
 
@@ -199,22 +289,69 @@
 
         <div class="bento-card">
           <p class="section-title">For You</p>
-          <svg width="180" height="200" viewBox="0 0 200 240">
-            <path d="M100 230 L70 140 M100 230 L100 120 M100 230 L130 140" stroke="#2d6a4f" stroke-width="3" fill="none"/>
-            <g transform="translate(100,100)">
-              <circle cx="0" cy="0" r="22" fill="#ffb703"/><circle cx="0" cy="0" r="10" fill="#3d2b1f"/>
-            </g>
-            <g transform="translate(65,130)"><ellipse cx="0" cy="0" rx="10" ry="15" fill="#ff4d6d"/></g>
-            <g transform="translate(135,130)"><circle cx="0" cy="0" r="15" fill="#ffb3c1" opacity="0.9"/></g>
-            <rect x="90" y="200" width="20" height="8" rx="2" fill="#d66d75"/>
-          </svg>
-          <p style="margin-top: 15px; font-size: 14px; font-weight: bold; color: var(--accent);">Tulips • Sunflowers • Carnations</p>
+          
+          <div class="bouquet-container" onclick="createPetal(event)">
+            <div class="bouquet-polaroid pos-tl">
+              <img src="https://picsum.photos/200/200?1">
+              <span>♥</span>
+            </div>
+            <div class="bouquet-polaroid pos-tr">
+              <img src="https://picsum.photos/200/200?2">
+              <span>♥</span>
+            </div>
+            <div class="bouquet-polaroid pos-bl">
+              <img src="https://picsum.photos/200/200?3">
+              <span>♥</span>
+            </div>
+            <div class="bouquet-polaroid pos-br">
+              <img src="https://picsum.photos/200/200?4">
+              <span>♥</span>
+            </div>
+            <svg width="220" height="260" viewBox="0 0 200 260" class="blushing-bouquet">
+              <g stroke="#437d5b" stroke-width="3" fill="none" stroke-linecap="round">
+                <path d="M100 240 Q95 180 80 130" />
+                <path d="M100 240 Q100 180 100 110" />
+                <path d="M100 240 Q105 180 125 130" />
+                <path d="M100 240 Q80 190 60 150" />
+                <path d="M100 240 Q120 190 140 150" />
+              </g>
+
+              <path d="M60 250 L140 250 L125 190 L75 190 Z" fill="#f8d7da" />
+              <path d="M75 190 Q100 170 125 190" fill="#f8d7da" />
+              <rect x="85" y="215" width="30" height="6" rx="3" fill="#d66d75" />
+
+              <g transform="translate(65,145)" class="flower-sway">
+                <circle cx="0" cy="0" r="20" fill="#ffccd5" opacity="0.9" />
+                <circle cx="0" cy="0" r="12" fill="#ffb3c1" />
+                <circle cx="0" cy="0" r="6" fill="#ff85a1" />
+              </g>
+              
+              <g transform="translate(135,145)" class="flower-sway" style="animation-delay: -1s;">
+                <circle cx="0" cy="0" r="20" fill="#ffccd5" opacity="0.9" />
+                <circle cx="0" cy="0" r="12" fill="#ffb3c1" />
+                <circle cx="0" cy="0" r="6" fill="#ff85a1" />
+              </g>
+
+              <g transform="translate(80,110)" class="flower-sway" style="animation-delay: -0.5s;">
+                <circle cx="0" cy="0" r="18" fill="#ffc300" />
+                <circle cx="0" cy="0" r="10" fill="#6d4c41" />
+              </g>
+              
+              <g transform="translate(125,110)" class="flower-sway" style="animation-delay: -1.5s;">
+                <circle cx="0" cy="0" r="18" fill="#ffc300" />
+                <circle cx="0" cy="0" r="10" fill="#6d4c41" />
+              </g>
+
+              <g transform="translate(100,85)" class="flower-sway">
+                <ellipse cx="0" cy="0" rx="15" ry="22" fill="#ff4d6d" />
+                <ellipse cx="-7" cy="0" rx="10" ry="18" fill="#ff758f" />
+                <ellipse cx="7" cy="0" rx="10" ry="18" fill="#ff758f" />
+                <ellipse cx="0" cy="5" rx="8" ry="12" fill="#ffb3c1" />
+              </g>
+            </svg>
+          </div>
         </div>
-
-      </div>
-    </div>
-  </div>
-
+          
   <audio id="myAudio" loop>
     <source src="Contents/music/Libu-Libong Buwan (Uuwian) - Kyle Raphael (Lyric Video).mp3" type="audio/mpeg">
   </audio>
