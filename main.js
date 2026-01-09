@@ -168,11 +168,11 @@ function startSecretTypewriter() {
 }
 
 const playlist = [
-    "Contents/music/Libu-Libong Buwan (Uuwian).mp3",
-    "Contents/music/dj poolboi - like we were the last two people on earth.mp3",
-    "Contents/music/Habang Buhay Kitang Mamahalin.mp3",
-    "Contents/music/HONNE - no song without you.mp3",
-    "Contents/music/Sixpence None The Richer - Kiss me (1997).mp3",
+    "Contents/music/libu-libong-buwan.mp3",
+    "Contents/music/dj-poolboi-like-we-were.mp3",
+    "Contents/music/habang-buhay.mp3",
+    "Contents/music/honne-no-song.mp3",
+    "Contents/music/sixpence-kiss-me.mp3",
 ];
 
 let currentSongIndex = 0;
