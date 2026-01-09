@@ -44,12 +44,30 @@ function handleSwipe() {
 const reasons = [
     "The way you smile when you're shy.",
     "How you always know how to comfort me.",
+    "Mga nunal mo sa katawan.",
+    "Your passion for the things you love.",
+    "The way you care for others.",
+    "Yung pangil mo na medyo matulis.",
+    "Scar mo sa noo",
+    "Your sexy body.",
+    "Pagiging maligalig mo pag lasing.",
+    "Your kisses.",
     "Your incredible strength.",
     "The way you look at me.",
     "Your laugh is my favorite sound.",
     "How safe I feel in your arms.",
     "Amoy ng kili kili mo.",
-    "Pag lasing ka."
+    "Pag lasing ka.",
+    "Your adventurous spirit.",
+    "How you always support my dreams.",
+    "Hugs mo na mahigpit.",
+    "Your big and soft boobs.",
+    "The way you say my name.",
+    "Your nose.",
+    "Your dedication to your goals.",
+    "The way you light up a room.",
+    "Your intelligence and wit.",
+    "How you always make time for me.",
 ];
 let reasonIndex = 0;
 
