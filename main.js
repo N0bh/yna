@@ -118,11 +118,13 @@ My favorite memory of you was when we're drinking sa kainan sa Lagro malapit kay
 
 Also, sorry if you think na I'm too much, and sometimes kulang. Love, time, and effort are just the things that I can give you in my current state. But, I promise na I'll try my best to make you happy always.
 
-To add to this surprise. I earned enough money to book a discounted airline ticket to go back home. So, that we can celebrate your birthday together. Let's make your birthday memorable bb.
+I’m having a hard time to choose kung ano ireregalo ko sa’yo, but there’s one thing I remember na gusto mo nakaraan. You’re having a hard time ngayon due to your finals, and other problems. I’m having problems din financially, career wise and family wise. Let’s be patient with each other. I want to be with you, pero ganito situation natin. I hope you'll accept my gift, because it symbolize that I’m always there for you. I want to hug and kiss you, pero itong gift ko na gagawa para sa’yo. To add to this surprise. I earned enough money to book a discounted airline ticket to go back home. So, that we can celebrate your birthday together. Let's make your birthday memorable bb.
 
-Thank you for this year BB! I hope despite the circumstances that we individually face. We always find to choose each other. Cheers to us for conquering this year. I hope god bless us more blessings and adventures to face. I love you always, see you soon!
+Thank you for this year BB! I hope despite the circumstances that we individually face. We always find to choose each other. Cheers to us for conquering this year. I hope god bless us more blessings and adventures to face. Merry Christmas and Happy New Year BB! I love you always, see you soon!
+
 
 Sweetest regards,
+
 Your favorite kaaway, Bon`;
 
 let secretTypingStarted = false;
