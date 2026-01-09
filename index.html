@@ -293,6 +293,48 @@
       z-index: 2;
     }
 
+    /* Locked Letter */
+    .locked-card {
+      background: #fdf2f4;
+      border: 2px dashed var(--accent-light);
+      border-radius: 20px;
+      padding: 30px;
+      width: 100%;
+      transition: all 0.5s ease;
+    }
+
+    .password-input {
+      width: 80%;
+      padding: 12px;
+      border: 1px solid var(--accent-light);
+      border-radius: 25px;
+      outline: none;
+      text-align: center;
+      margin-top: 15px;
+      font-family: inherit;
+    }
+
+    .unlock-btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 10px 25px;
+      border-radius: 20px;
+      margin-top: 10px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .secret-content {
+      display: none; /* Hidden by default */
+      animation: fadeIn 0.8s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
   </style>
 </head>
 <body>
@@ -439,6 +481,29 @@
           </div>
         </div>
 
+        <div class="bento-card" id="secret-section">
+          <p class="section-title">A Secret for You</p>
+          
+          <div id="lock-screen">
+            <div style="font-size: 3rem; margin-bottom: 10px;">🔒</div>
+            <p style="font-size: 0.9rem; opacity: 0.7;">This note is for your eyes only.</p>
+            <input type="password" id="note-password" class="password-input" placeholder="Enter our special date (MMDD)">
+            <button class="unlock-btn" onclick="checkPassword()">Unlock</button>
+            <p id="pw-error" style="color: var(--accent); font-size: 12px; margin-top: 10px; display: none;">Try again, my love! ❤️</p>
+          </div>
+
+          <div id="secret-note" class="secret-content">
+            <div class="locked-card">
+              <p style="font-family: 'Georgia', serif; font-style: italic; line-height: 1.6;">
+                "You found it! This is just a little extra reminder that I am so incredibly proud of you. 
+                Whatever you're feeling right now, just know I'm always in your corner. 
+                I love you more than words can say."
+              </p>
+            </div>
+            <p style="margin-top: 15px; font-size: 11px; color: var(--accent);">PS: Check the next slide for your flowers! 💐</p>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -447,138 +512,160 @@
     <source src="Contents/music/Libu-Libong Buwan (Uuwian) - Kyle Raphael (Lyric Video).mp3" type="audio/mpeg">
   </audio>
 
-<script>
-    const startDate = new Date('2025-06-03');
-    let currentIndex = 0;
-    const track = document.getElementById('track');
-    const totalCards = 6; 
+  <script>
+      const startDate = new Date('2025-06-03');
+      let currentIndex = 0;
+      const track = document.getElementById('track');
+      // Updated to 7 to account for the new Secret Note section
+      const totalCards = 7; 
 
-    // --- Typewriter Variables ---
-    let typingStarted = false;
-    const letterSource = `Yna,
+      // --- Typewriter Variables ---
+      let typingStarted = false;
+      const letterSource = `Yna,
 
-As I'm writing this I'm smiling just thinking about you. All those cafe dates, gala, arguments, sweet and intimate moments with each other.
+  As I'm writing this I'm smiling just thinking about you. All those cafe dates, gala, arguments, sweet and intimate moments with each other.
 
-It's rare to have a genuine connection with someone in this generation, especially romantically. I want to thank you for giving me a chance to know you deeply. For sharing your time, stories and burden with me.
+  It's rare to have a genuine connection with someone in this generation, especially romantically. I want to thank you for giving me a chance to know you deeply. For sharing your time, stories and burden with me.
 
-You changed my perspective in everything Yna. I've suppressed my soft side for a long time, and I loved that I got to show it, especially to you.
+  You changed my perspective in everything Yna. I've suppressed my soft side for a long time, and I loved that I got to show it, especially to you.
 
-My favorite memory was when we were drinking near Ate V. There I saw the real you. A fragile person that just wants someone to understand her. I try my best to give that understanding because that's what you need.
+  My favorite memory was when we were drinking near Ate V. There I saw the real you. A fragile person that just wants someone to understand her. I try my best to give that understanding because that's what you need.
 
-I promise I'll try my best to make you happy always. Thank you for this year BB! I hope we always find a way to choose each other. I love you always!
+  I promise I'll try my best to make you happy always. Thank you for this year BB! I hope we always find a way to choose each other. I love you always!
 
-Sweetest regards,
-Your favorite kaaway, Bon`;
+  Sweetest regards,
+  Your favorite kaaway, Bon`;
 
-    let touchStartX = 0;
-    let touchEndX = 0;
-    const mainContent = document.getElementById('main-content');
-    
-    mainContent.addEventListener('touchstart', e => {
-      touchStartX = e.changedTouches[0].screenX;
-    }, {passive: true});
+      let touchStartX = 0;
+      let touchEndX = 0;
+      const mainContent = document.getElementById('main-content');
+      
+      mainContent.addEventListener('touchstart', e => {
+        touchStartX = e.changedTouches[0].screenX;
+      }, {passive: true});
 
-    mainContent.addEventListener('touchend', e => {
-      touchEndX = e.changedTouches[0].screenX;
-      handleSwipe();
-    }, {passive: true});
+      mainContent.addEventListener('touchend', e => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+      }, {passive: true});
 
-    function handleSwipe() {
-      const swipeThreshold = 50;
-      if (touchStartX - touchEndX > swipeThreshold) { next(); } 
-      else if (touchEndX - touchStartX > swipeThreshold) { prev(); }
-    }
+      function handleSwipe() {
+        const swipeThreshold = 50;
+        if (touchStartX - touchEndX > swipeThreshold) { next(); } 
+        else if (touchEndX - touchStartX > swipeThreshold) { prev(); }
+      }
 
-    const reasons = [
-      "The way you smile when you're shy.",
-      "How you always know how to comfort me.",
-      "Your incredible strength.",
-      "The way you look at me.",
-      "Your laugh is my favorite sound.",
-      "How safe I feel in your arms.",
-      "Amoy ng kili kili mo.",
-      "Pag lasing ka."
-    ];
-    let reasonIndex = 0;
+      const reasons = [
+        "The way you smile when you're shy.",
+        "How you always know how to comfort me.",
+        "Your incredible strength.",
+        "The way you look at me.",
+        "Your laugh is my favorite sound.",
+        "How safe I feel in your arms.",
+        "Amoy ng kili kili mo.",
+        "Pag lasing ka."
+      ];
+      let reasonIndex = 0;
 
-    function changeReason() {
-      const textEl = document.getElementById('reason-text');
-      if(!textEl) return;
-      textEl.style.opacity = 0;
-      setTimeout(() => {
-        reasonIndex = (reasonIndex + 1) % reasons.length;
-        textEl.innerText = reasons[reasonIndex];
-        textEl.style.opacity = 1;
-      }, 400);
-    }
+      function changeReason() {
+        const textEl = document.getElementById('reason-text');
+        if(!textEl) return;
+        textEl.style.opacity = 0;
+        setTimeout(() => {
+          reasonIndex = (reasonIndex + 1) % reasons.length;
+          textEl.innerText = reasons[reasonIndex];
+          textEl.style.opacity = 1;
+        }, 400);
+      }
 
-    // --- Typewriter Function ---
-    function typeWriter() {
-      const typewriterElement = document.getElementById('typewriter-text');
-      const scrollArea = document.getElementById('letter-scroll-area');
-      let i = 0;
-      const speed = 100; 
+      // --- Typewriter Function ---
+      function typeWriter() {
+        const typewriterElement = document.getElementById('typewriter-text');
+        const scrollArea = document.getElementById('letter-scroll-area');
+        let i = 0;
+        const speed = 100; 
 
-      function type() {
-        if (i < letterSource.length) {
-          typewriterElement.textContent += letterSource.charAt(i);
-          i++;
-          // Auto-scroll to bottom
-          if (scrollArea) {
-            scrollArea.scrollTop = scrollArea.scrollHeight;
+        function type() {
+          if (i < letterSource.length) {
+            typewriterElement.textContent += letterSource.charAt(i);
+            i++;
+            if (scrollArea) {
+              scrollArea.scrollTop = scrollArea.scrollHeight;
+            }
+            setTimeout(type, speed);
           }
-          setTimeout(type, speed);
+        }
+        type();
+      }
+
+      // --- Password Section Logic ---
+      function checkPassword() {
+        const pass = document.getElementById('note-password').value;
+        const lockScreen = document.getElementById('lock-screen');
+        const secretNote = document.getElementById('secret-note');
+        const errorMsg = document.getElementById('pw-error');
+
+        // Password set to your anniversary date 0603
+        if (pass === '0603') {
+          lockScreen.style.display = 'none';
+          secretNote.style.display = 'block';
+        } else {
+          errorMsg.style.display = 'block';
+          const inputField = document.getElementById('note-password');
+          inputField.style.borderColor = '#d66d75';
+          inputField.style.animation = 'shake 0.3s ease-in-out';
+          setTimeout(() => { 
+              inputField.style.animation = ''; 
+          }, 300);
         }
       }
-      type();
-    }
 
-    function startExperience() {
-      document.getElementById('gate-overlay').style.display = 'none';
-      document.getElementById('main-content').style.display = 'flex';
-      document.getElementById('nav-controls').style.display = 'block';
-      
-      const audio = document.getElementById('myAudio');
-      audio.play().catch(e => console.log("Audio play blocked"));
-      
-      const reasonEl = document.getElementById('reason-text');
-      if(reasonEl) reasonEl.innerText = reasons[0];
-      
-      setInterval(changeReason, 5000);
-      updateCounter();
-    }
-
-    function updateCounter() {
-      const diffDays = Math.floor(Math.abs(new Date() - startDate) / (1000 * 60 * 60 * 24));
-      const daysEl = document.getElementById('daysCount');
-      if(daysEl) daysEl.innerText = diffDays;
-    }
-
-    function next() { if (currentIndex < totalCards - 1) { currentIndex++; updateSlider(); } }
-    function prev() { if (currentIndex > 0) { currentIndex--; updateSlider(); } }
-
-    function updateSlider() {
-      track.style.transform = `translateX(-${currentIndex * 100}%)`;
-      
-      // Trigger typewriter when reaching the letter card (Index 4)
-      if (currentIndex === 4 && !typingStarted) {
-        typingStarted = true;
-        setTimeout(typeWriter, 800); 
+      function startExperience() {
+        document.getElementById('gate-overlay').style.display = 'none';
+        document.getElementById('main-content').style.display = 'flex';
+        document.getElementById('nav-controls').style.display = 'block';
+        
+        const audio = document.getElementById('myAudio');
+        audio.play().catch(e => console.log("Audio play blocked"));
+        
+        const reasonEl = document.getElementById('reason-text');
+        if(reasonEl) reasonEl.innerText = reasons[0];
+        
+        setInterval(changeReason, 5000);
+        updateCounter();
       }
-    }
 
-    const bContainer = document.getElementById('bubble-container');
-    function createFloater(type) {
-      const el = document.createElement('div');
-      el.className = type;
-      const size = Math.random() * 25 + 15 + 'px';
-      if(type === 'bubble') { el.style.width = size; el.style.height = size; }
-      else { el.innerHTML = '💗'; el.style.fontSize = size; }
-      el.style.left = Math.random() * 100 + 'vw';
-      el.style.animationDuration = (Math.random() * 8 + 8) + 's';
-      bContainer.appendChild(el);
-    }
-    for (let i = 0; i < 15; i++) { createFloater('bubble'); createFloater('heart-float'); }
+      function updateCounter() {
+        const diffDays = Math.floor(Math.abs(new Date() - startDate) / (1000 * 60 * 60 * 24));
+        const daysEl = document.getElementById('daysCount');
+        if(daysEl) daysEl.innerText = diffDays;
+      }
+
+      function next() { if (currentIndex < totalCards - 1) { currentIndex++; updateSlider(); } }
+      function prev() { if (currentIndex > 0) { currentIndex--; updateSlider(); } }
+
+      function updateSlider() {
+        track.style.transform = `translateX(-${currentIndex * 100}%)`;
+        
+        // Trigger typewriter when reaching the letter card (Index 4)
+        if (currentIndex === 4 && !typingStarted) {
+          typingStarted = true;
+          setTimeout(typeWriter, 800); 
+        }
+      }
+
+      const bContainer = document.getElementById('bubble-container');
+      function createFloater(type) {
+        const el = document.createElement('div');
+        el.className = type;
+        const size = Math.random() * 25 + 15 + 'px';
+        if(type === 'bubble') { el.style.width = size; el.style.height = size; }
+        else { el.innerHTML = '💗'; el.style.fontSize = size; }
+        el.style.left = Math.random() * 100 + 'vw';
+        el.style.animationDuration = (Math.random() * 8 + 8) + 's';
+        bContainer.appendChild(el);
+      }
+      for (let i = 0; i < 15; i++) { createFloater('bubble'); createFloater('heart-float'); }
   </script>
 </body>
 </html>
