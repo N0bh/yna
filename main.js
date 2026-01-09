@@ -167,17 +167,37 @@ function startSecretTypewriter() {
     type();
 }
 
+const playlist = [
+    "Contents/music/dj poolboi - like we were the last two people on earth.mp3",
+    "Contents/music/Habang Buhay Kitang Mamahalin.mp3",
+    "Contents/music/HONNE - no song without you.mp3",
+    "Contents/music/Sixpence None The Richer - Kiss me (1997).mp3",
+    "Contents/music/Libu-Libong Buwan (Uuwian).mp3"
+];
+
+function playRandomSong() {
+    const audio = document.getElementById('myAudio');
+    
+    const randomIndex = Math.floor(Math.random() * playlist.length);
+    
+    audio.src = playlist[randomIndex];
+    audio.play().catch(e => console.log("Playback interaction required"));
+
+    audio.onended = function() {
+        playRandomSong();
+    };
+}
+
 function startExperience() {
     document.getElementById('gate-overlay').style.display = 'none';
     document.getElementById('main-content').style.display = 'flex';
     document.getElementById('nav-controls').style.display = 'block';
-
-    const audio = document.getElementById('myAudio');
-    audio.play().catch(e => console.log("Audio play blocked"));
-
+    
+    playRandomSong();
+    
     const reasonEl = document.getElementById('reason-text');
     if (reasonEl) reasonEl.innerText = reasons[0];
-
+    
     setInterval(changeReason, 5000);
     updateCounter();
 }
