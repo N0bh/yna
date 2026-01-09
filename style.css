@@ -48,8 +48,8 @@ body {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    width: 150px;
+    height: 150%;
     z-index: -1;
     pointer-events: none;
 }
@@ -144,6 +144,7 @@ body {
 }
 
 .section-title {
+    position: sticky;
     text-transform: uppercase;
     letter-spacing: 2px;
     font-size: 0.75rem;
@@ -217,20 +218,16 @@ body {
 
 /* Typewriter Letter Styles */
 .typewriter-container {
+    flex-grow: 1;
     background: #fdfcf0;
-    /* Paper-like color */
     padding: 20px;
-    border-radius: 8px;
-    box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.05);
+    border-radius: 12px;
     width: 100%;
     height: 300px;
-    /* Fixed height for auto-scrolling */
     overflow-y: auto;
-    /* Allows scrolling */
     text-align: left;
     border: 1px solid #e0d8c3;
     scrollbar-width: none;
-    /* Hide scrollbar for clean look */
 }
 
 .typewriter-container::-webkit-scrollbar {
@@ -262,20 +259,6 @@ body {
     }
 }
 
-/* Styling for the secret paper note */
-.typewriter-container {
-    background: #fdfcf0; /* Paper color */
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.05);
-    width: 100%;
-    height: 100%; /* Fits perfectly in the bento card */
-    overflow-y: auto;
-    text-align: left;
-    border: 1px solid #e0d8c3;
-    scrollbar-width: none;
-}
-
 #secret-typewriter-text {
     font-family: 'Courier New', Courier, monospace;
     font-size: 0.95rem;
@@ -285,11 +268,30 @@ body {
     margin: 0;
 }
 
-/* Flashing cursor for the secret message */
 #secret-typewriter-text::after {
     content: '|';
     animation: blink 0.8s infinite;
     color: var(--accent);
+}
+
+@media (max-width: 600px) {
+    .main-wrapper {
+        width: 95vw;
+    }
+
+    .bento-card {
+        height: 520px;
+        padding: 20px 15px;
+    }
+
+    .typewriter-container {
+        font-size: 0.85rem;
+    }
+
+    .section-title {
+        font-size: 0.65rem;
+        margin-bottom: 10px;
+    }
 }
 
 /* Memory slider */
